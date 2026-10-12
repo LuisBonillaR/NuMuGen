@@ -1,0 +1,24 @@
+# Conda
+envs/
+*.conda
+*.tar.bz2
+ 
+# Python
+__pycache__/
+*.py[cod]
+ 
+# Outputs
+outputs/
+ 
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+ 
+# OS
+.DS_Store
+Thumbs.db
+ 
+# IDE
+.vscode/
+.idea/
+

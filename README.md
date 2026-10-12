@@ -1,6 +1,7 @@
 # NuMuGen
 
 GAN-based generator for neutrino-Argon interaction events.
+<img width="640" height="480" alt="NuMu_Gen_Invmass" src="https://github.com/user-attachments/assets/3a8d8dae-74b7-4859-a81f-cb2506f83df5" />
 
 ## Installation
 

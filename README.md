@@ -52,3 +52,7 @@ gpu        = ; bool. Use GPU (when available)
 ```
 
 CLI flags always override config file values.
+
+# Acknowledgments
+
+This research is partly (K.M.G., B.E.K, J.T.S.) or fully (J.L.B, H.P., R.D.B.) supported by the National Science Centre under grant UMO-2021/41/B/ST2/02778. J.L.B. and J.T.S. are also supported by the Polish Ministry of Science Grant No. 2022/WK/15.

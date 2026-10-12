@@ -1,6 +1,10 @@
 # NuMuGen
 
-GAN-based generator for neutrino-Argon interaction events.
+
+GAN-based generator for neutrino-Argon interaction events based on the paper: 
+- _Machine-learning-based neutrino-event generation constrained by experimental measurements_, by Jose L. Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, Jan T. Sobczyk, [arXiv:2610.xxxxx](xx)
+- Abstract: We present a generative surrogate for charged-current \(\nu_\mu\)-nucleus scattering that can be calibrated to measured differential cross sections without event-level experimental samples. Starting from a theoretical interaction model, we fine-tune the surrogate to a MicroBooNE measurement and show that this also improves the description of observables not used in the fit. The calibrated model can also be applied to measurements from different neutrino fluxes without retuning, while retaining event-level predictions of outgoing-muon kinematics. Our results show that experimental cross sections can directly constrain generative event models while preserving their applicability across different observables and beam configurations. 
+
 <img width="640" height="480" alt="NuMu_Gen_Invmass" src="https://github.com/user-attachments/assets/3a8d8dae-74b7-4859-a81f-cb2506f83df5" />
 
 ## Installation

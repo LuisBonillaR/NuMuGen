@@ -2,7 +2,7 @@
 
 NuMuGen is a lightweight inference package for the tuned neural surrogate
 introduced in the paper below. It generates charged-current
-\(\nu_\mu\)-argon interaction events by combining:
+$\nu_\mu$-argon interaction events by combining:
 
 - a conditional GAN that samples outgoing-muon kinematics at fixed neutrino
   energy, and
@@ -12,11 +12,11 @@ introduced in the paper below. It generates charged-current
 The program takes either a monoenergetic neutrino beam or a binned neutrino
 flux as input, samples flux-weighted incoming neutrino energies, generates
 event-level muon kinematics, and writes histograms of derived observables such
-as \(E_\mu\), \(E_{had}\), \(\theta_\mu\), \(p_{\mu z}\), \(Q^2\), and the
-hadronic invariant mass \(W\). With normalization enabled, the histograms are
+as $E_\mu$, $E_{had}$, $\theta_\mu$, $(p_{\mu z}$, $Q^2$, and the
+hadronic invariant mass $W$. With normalization enabled, the histograms are
 scaled by the predicted flux-integrated cross section.
 
-This repository contains the trained tuned models used for public
+This repository contains the post-tuned models used for public
 prediction/reproduction studies. It is not the full training or fine-tuning
 pipeline: the NuWro training samples, MicroBooNE covariance matrices, smearing
 matrices, and reservoir-construction code are not included.

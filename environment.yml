@@ -3,8 +3,7 @@ channels:
   - conda-forge
   - defaults
 dependencies:
-  - tensorflow>=2.15
-  - tensorflow-gpu>=2.15
+  - tensorflow=2.15
   - numpy
   - matplotlib
   - scipy

@@ -50,7 +50,6 @@ if __name__ == "__main__":
     n_events = args.n_events
     flux = args.flux
     no_plots = args.no_plots
-    no_plots = args.no_plots
     norm = args.norm
     batch_size = args.batch_size
     

@@ -4,11 +4,11 @@ import argparse
 from utils.numugan_utils import load_config, RunNuWroGAN
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--conf', default='config/default.ini')
-parser.add_argument('--generator', type=str,
-                    help='GAN generator file.')
-parser.add_argument('--xsec-model', type=str,
-                    help='sigma-DNN file.')
+parser.add_argument('--conf', default='config/default.ini',
+    help="Path to configuration file. Defaults to 'config/default.ini'." + 
+    " Options in configuration file are overriden by the following flags.")
+parser.add_argument('--generator', type=str, help='GAN generator file.')
+parser.add_argument('--xsec-model', type=str, help='sigma-DNN file.')
 parser.add_argument(
     '--n-events', type=int,
     help="Number of events per batch to be produced. Defaults to 100000"

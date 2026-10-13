@@ -1,8 +1,8 @@
 # NuMuGen
 
-NuMuGen is a lightweight inference package for the tuned neural surrogate
-introduced in the paper below. It generates charged-current
-$\nu_\mu$-argon interaction events by combining:
+NuMuGen is a lightweight inference package developed in Keras/TensorFlow 2.15
+for the tuned neural surrogate introduced in the paper below. It generates
+charged-current $\nu_\mu$-argon interaction events by combining:
 
 - a conditional GAN that samples outgoing-muon kinematics at fixed neutrino
   energy, and

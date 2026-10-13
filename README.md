@@ -12,7 +12,7 @@ $\nu_\mu$-argon interaction events by combining:
 The program takes either a monoenergetic neutrino beam or a binned neutrino
 flux as input, samples flux-weighted incoming neutrino energies, generates
 event-level muon kinematics, and writes histograms of derived observables such
-as $E_\mu$, $E_{had}$, $\theta_\mu$, $(p_{\mu z}$, $Q^2$, and the
+as $E_\mu$, $E_{had}$, $\theta_\mu$, $p_{\mu z}$, $Q^2$, and the
 hadronic invariant mass $W$. With normalization enabled, the histograms are
 scaled by the predicted flux-integrated cross section.
 

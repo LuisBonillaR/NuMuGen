@@ -6,24 +6,24 @@ from utils.numugan_utils import load_config, RunNuWroGAN
 parser = argparse.ArgumentParser()
 parser.add_argument('--conf', default='config/default.ini')
 parser.add_argument('--generator', type=str,
-                    help='GAN generator name.')
+                    help='GAN generator file.')
 parser.add_argument('--xsec-model', type=str,
-                    help='sigma-DNN name.')
+                    help='sigma-DNN file.')
 parser.add_argument(
     '--n-events', type=int,
-    help="Number of events per batch to be produced. Defaults to 1000"
+    help="Number of events per batch to be produced. Defaults to 100000"
 )
 parser.add_argument(
     '--batch-size', type=int,
-    help="Number of events to be produced. Defaults to 200000"
+    help="Number of events to be produced. Defaults to 10000"
 )
 parser.add_argument(
     '--flux', type=float, nargs="*",
-    help='Energy of neutrino beam in MeV. Defaults to 1000 MeV.'
+    help='Energy of neutrino beam in MeV. Defaults to MicroBooNE flux.'
 )
 parser.add_argument(
     "--no-plots", action="store_true", default=None,
-    help="Bool. Use it to prevent saving histograms of generated variables."
+    help="Use it to prevent saving histograms of generated variables."
 )
 parser.add_argument(
     "--norm", action="store_true", default=None,
@@ -31,7 +31,7 @@ parser.add_argument(
 )
 parser.add_argument(
     "--gpu", action="store_true", default=None,
-    help="Bool. Use GPU instead of CPU for the generator, if available."
+    help="Use GPU instead of CPU for the generator, if available."
 )
 
 

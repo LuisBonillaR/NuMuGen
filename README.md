@@ -1,9 +1,34 @@
 # NuMuGen
 
+NuMuGen is a lightweight inference package for the tuned neural surrogate
+introduced in the paper below. It generates charged-current
+\(\nu_\mu\)-argon interaction events by combining:
 
-GAN-based generator for neutrino-Argon interaction events based on the paper: 
-- __Machine-learning-based neutrino-event generation constrained by experimental measurements__, by Jose L. Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, Jan T. Sobczyk, [arXiv:2610.xxxxx](xx)
-- Abstract: We present a generative surrogate for charged-current \(\nu_\mu\)-nucleus scattering that can be calibrated to measured differential cross sections without event-level experimental samples. Starting from a theoretical interaction model, we fine-tune the surrogate to a MicroBooNE measurement and show that this also improves the description of observables not used in the fit. The calibrated model can also be applied to measurements from different neutrino fluxes without retuning, while retaining event-level predictions of outgoing-muon kinematics. Our results show that experimental cross sections can directly constrain generative event models while preserving their applicability across different observables and beam configurations. 
+- a conditional GAN that samples outgoing-muon kinematics at fixed neutrino
+  energy, and
+- a cross-section DNN that supplies the energy-dependent normalization and
+  flux weighting.
+
+The program takes either a monoenergetic neutrino beam or a binned neutrino
+flux as input, samples flux-weighted incoming neutrino energies, generates
+event-level muon kinematics, and writes histograms of derived observables such
+as \(E_\mu\), \(E_{had}\), \(\theta_\mu\), \(p_{\mu z}\), \(Q^2\), and the
+hadronic invariant mass \(W\). With normalization enabled, the histograms are
+scaled by the predicted flux-integrated cross section.
+
+This repository contains the trained tuned models used for public
+prediction/reproduction studies. It is not the full training or fine-tuning
+pipeline: the NuWro training samples, MicroBooNE covariance matrices, smearing
+matrices, and reservoir-construction code are not included.
+
+The main result of the associated work is that a GAN event generator can be
+constrained directly by measured differential cross sections while retaining
+event-level predictions and remaining usable for other flux configurations.
+The tuned model distributed here is the resulting surrogate.
+
+Based on:
+
+- __Machine-learning-based neutrino-event generation constrained by experimental measurements__, by Jose L. Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, and Jan T. Sobczyk, [arXiv:2610.xxxxx](xx).
 
 <img width="640" height="480" alt="NuMu_Gen_Invmass" src="https://github.com/user-attachments/assets/3a8d8dae-74b7-4859-a81f-cb2506f83df5" />
 
@@ -13,6 +38,10 @@ GAN-based generator for neutrino-Argon interaction events based on the paper:
 conda env create -f environment.yml
 conda activate numugen
 ```
+
+The distributed `.keras` models were saved with Keras/TensorFlow 2.15.
+Use the environment above, or an equivalent environment with TensorFlow 2.15,
+to avoid model deserialization errors with newer Keras versions.
 
 ## Usage
 
@@ -25,13 +54,16 @@ python run_numugen.py
 # 200000 events from monoenergetic beam (MeV)
 python run_numugen.py --n-events 200000 --flux 1000
 
-# From default config file
-python run_numugen.py --config configs/custom.ini
+# From a custom config file
+python run_numugen.py --conf config/custom.ini
+
+# Do not write histograms
+python run_numugen.py --no-plots
 ```
 
 ## Configuration
 
-Create or edit `configs/default.ini` to set model paths, event counts, GPU usage, etc:
+Create or edit `config/default.ini` to set model paths, event counts, GPU usage, etc:
 
 ```ini
 [models]

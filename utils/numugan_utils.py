@@ -19,14 +19,14 @@ power = 2.0
 
 OUTPUT_DIR = "outputs/figures/"
 numugen_string = (
-"""_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                   _____    __   _   __   _  
-  _   _           |  __ \  |  \ | | |  \ | |   Nu-DNN Neutrino Generator 
- / \ ( |     ___  | |  \ \ | | \| | | | \| |                             
-  \ \//     |___| | |__/ / | |\ \ | | |\ \ |   J. L. Bonilla et al.      
-   \_/  |_|       |_____/  |_| \__| |_| \__|                             
-        |                                                                
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+"""_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+                    _____   ______   __   _                                
+  _   _            / ____| |  ____| |  \ | |  NuMu-GEN Neutrino Generator  
+ / \ ( |     ___  | |  __  | |___   | | \| |                               
+  \ \//     |___| | |__\ | |  ___|  | |\ \ |  J. L. Bonilla et al.         
+   \_/  |_|        \_____/ |______| |_| \__|                               
+        |                                                                  
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 """
 )
 
@@ -312,9 +312,9 @@ def RunNuWroGAN(
     
     gen_events = predict(generator, latent_points, Enu_in, n_events, batch_size)
     
-    print('-------------------------------------------------------------------------')
-    print(" Flux integrated cross section: {}".format(nn_xsec*1e-38))
-    print('-------------------------------------------------------------------------')
+    print('---------------------------------------------------------------------------')
+    print(" Flux integrated cross section: {} cm^2".format(nn_xsec*1e-38))
+    print('---------------------------------------------------------------------------')
     
     if not no_plots:
         xsec = nn_xsec if norm else None
@@ -336,7 +336,7 @@ def RunNuWroGAN(
         pmuz_hist = {}
         Q2_hist = {}
         Invmass_hist = {}
-        prob_label = "Probaility density"
+        prob_label = "Events per bin"
         
         # Emu
         Emu_hist["gan"] = Emu_gen * MEV_TO_GEV

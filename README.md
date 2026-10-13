@@ -76,7 +76,7 @@ n_events = ; Number of events to be produced
 
 [plots]
 no_plots = ; bool. Do not save plots
-norm     = ; Scale plots by predicted flux integrated cross section
+norm     = ; bool. Scale plots by predicted flux integrated cross section
 
 [performance]
 batch_size = ; Step size to produce n_events

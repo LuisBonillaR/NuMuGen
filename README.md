@@ -74,7 +74,8 @@ xsec_model = ; Path to cross section .keras/.h5 model
 flux     = ; Flux. Either monoenergetic beam or flux min_enu max_enu bins_height
 n_events = ; Number of events to be produced
 
-[plots]
+[outputs]
+output = ; Base name for the outputs
 no_plots = ; bool. Do not save plots
 norm     = ; bool. Scale plots by predicted flux integrated cross section
 

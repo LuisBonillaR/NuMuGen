@@ -3,6 +3,7 @@ from math import pi as PI
 from math import ceil
 
 import numpy as np
+import uproot
 import matplotlib.pyplot as plt
 from scipy import stats
 
@@ -17,14 +18,16 @@ MNUC = (MN + MP)/2
 MEV_TO_GEV = 1e-3
 power = 2.0
 
-OUTPUT_DIR = "outputs/figures/"
+OUTPUT_DIR = "outputs/"
+OUTPUT_FIG = "figures/"
+OUTPUT_FILE = "files/"
 numugen_string = (
 """_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
                     _____   ______   __   _                                
   _   _            / ____| |  ____| |  \ | |  NuMu-GEN Neutrino Generator  
- / \ ( |     ___  | |  __  | |___   | | \| |                               
-  \ \//     |___| | |__\ | |  ___|  | |\ \ |  J. L. Bonilla et al.         
-   \_/  |_|        \_____/ |______| |_| \__|                               
+ / \ ( |     ___  | |  __  | |___   | | \| |  J. L. Bonilla et al.         
+  \ \//     |___| | |__\ | |  ___|  | |\ \ |                               
+   \_/  |_|        \_____/ |______| |_| \__|  26.10                        
         |                                                                  
 _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
 """
@@ -53,8 +56,9 @@ def load_config(parser):
     conf['flux'] = parse_value_or_list(cfg.get('events', 'flux'), float)
     conf['n_events'] = cfg.getint('events', 'n_events')
     
-    conf['no_plots'] = cfg.getboolean("plots", "no_plots")
-    conf['norm'] = cfg.getboolean("plots", "norm")
+    conf['output'] = cfg.get("outputs", "output")
+    conf['no_plots'] = cfg.getboolean("outputs", "no_plots")
+    conf['norm'] = cfg.getboolean("outputs", "norm")
     
     conf['batch_size'] = cfg.getint('performance', 'batch_size')
     conf['gpu'] = cfg.getboolean("performance", "gpu")
@@ -210,8 +214,10 @@ def calc_Q2(Enu, Emu, thetamu, lepmass):
 
 def calc_Invmass(Ehad, Q2, Mnuc=MNUC):
     W2 = Mnuc**2 + 2*Mnuc*Ehad - Q2
-    W2 = W2[W2>0]
-    return np.sqrt(W2)
+    sign = W2/np.abs(W2)
+    W = sign*np.sqrt(np.abs(W2))
+    
+    return W
 
 
 
@@ -220,7 +226,7 @@ def make_hist(
         density=False, xlabel=None, ylabel=None, ylogscale=False,
         figure_format="png", label_gen="GAN", xsec=None
     ):
-    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(OUTPUT_DIR+OUTPUT_FIG, exist_ok=True)
     
     fig, ax = plt.subplots(layout="constrained")
     ax.ticklabel_format(
@@ -246,19 +252,22 @@ def make_hist(
     ymax *= 6/5
     ax.set_ylim([ymin, ymax])
     
-    print("Saving {} histogram in {}".format(fig_name, OUTPUT_DIR))
+    path = OUTPUT_DIR + OUTPUT_FIG
+    print("Saving {} histogram in {}".format(fig_name, path))
     if type(figure_format) is list:
         for form in figure_format:
-            plt.savefig(OUTPUT_DIR + fig_name + "." + form)
+            plt.savefig(path + fig_name + "." + form)
     else:
-        plt.savefig(OUTPUT_DIR + fig_name + "." + figure_format)
+        plt.savefig(path + fig_name + "." + figure_format)
     
     plt.close()
 
 
 
 def RunNuWroGAN(
-        m_xsec, m_generator, n_events, in_flux, batch_size, no_plots, norm
+        m_xsec, m_generator,
+        n_events, in_flux, batch_size,
+        output, no_plots, norm
     ):
     print(numugen_string)
     import tensorflow as tf
@@ -290,7 +299,7 @@ def RunNuWroGAN(
         max_enu = in_flux[1]
         bin_edges = np.linspace(min_enu, max_enu, flux.size + 1)
         
-        enu_bin_mid = (bin_edges[:-1] + np.diff(bin_edges)/2)/1000
+        enu_bin_mid = (bin_edges[:-1] + bin_edges[1:])/2/1000
         edges_for_gan = np.repeat(bin_edges,2)[1:-1].reshape(-1,2)/2e4
         edges_for_gan = np.append(edges_for_gan, np.diff(edges_for_gan), axis=-1)
         
@@ -312,22 +321,42 @@ def RunNuWroGAN(
     
     gen_events = predict(generator, latent_points, Enu_in, n_events, batch_size)
     
+    vEmu_gen = gen_events[:,0]
+    vthetamu_gen = gen_events[:,1]
+    
+    Emu_gen = unnormalize_Emu(vEmu_gen, Enu_gen, lepmass_gen)
+    thetamu_gen = unnormalize_thetamu(vthetamu_gen)
+    pmuz_gen = calc_pmuz(Emu_gen, thetamu_gen, lepmass_gen)
+    Ehad_gen = calc_Ehad(Enu_gen, Emu_gen)
+    Q2_gen = calc_Q2(Enu_gen, Emu_gen, thetamu_gen, lepmass_gen)
+    Invmass_gen = calc_Invmass(Ehad_gen, Q2_gen)
+    
     print('---------------------------------------------------------------------------')
     print(" Flux integrated cross section: {} cm^2".format(nn_xsec*1e-38))
     print('---------------------------------------------------------------------------')
     
+    evts = {
+        "Enu": Enu_gen,
+        "Emu": Emu_gen,
+        "theta": thetamu_gen,
+        "pmuz": pmuz_gen,
+        "Ehad": Ehad_gen,
+        "Q2": Q2_gen,
+        "W": Invmass_gen
+    }
+    
+    path = OUTPUT_DIR + OUTPUT_FILE
+    print("Saving {} files in {}".format(output, path))
+    os.makedirs(OUTPUT_DIR, exist_ok=True)
+    os.makedirs(path, exist_ok=True)
+    output_name = path + output
+    with uproot.recreate(output_name + ".root") as f:
+        f.mktree("events", evts)
+    with open(output_name + ".txt", 'w') as f:
+        f.write("Flux integrated cross section: {} cm^2".format(nn_xsec*1e-38))
+    
     if not no_plots:
         xsec = nn_xsec if norm else None
-        
-        vEmu_gen = gen_events[:,0]
-        vthetamu_gen = gen_events[:,1]
-        
-        Emu_gen = unnormalize_Emu(vEmu_gen, Enu_gen, lepmass_gen)
-        thetamu_gen = unnormalize_thetamu(vthetamu_gen)
-        pmuz_gen = calc_pmuz(Emu_gen, thetamu_gen, lepmass_gen)
-        Ehad_gen = calc_Ehad(Enu_gen, Emu_gen)
-        Q2_gen = calc_Q2(Enu_gen, Emu_gen, thetamu_gen, lepmass_gen)
-        Invmass_gen = calc_Invmass(Ehad_gen, Q2_gen)
         
         # create dictionaries containing histograms information
         Emu_hist = {}
@@ -353,7 +382,7 @@ def RunNuWroGAN(
         Ehad_hist["ylabel"] = r"$d\sigma/dE_{had}(\times10^{-38})$" if xsec is not None else prob_label
         
         # Invmass
-        Invmass_hist["gan"] = Invmass_gen * MEV_TO_GEV
+        Invmass_hist["gan"] = Invmass_gen[Invmass_gen>0] * MEV_TO_GEV
         Invmass_hist["bins"] = bins
         Invmass_hist["range"] = None
         Invmass_hist["xlabel"] = r"$W$ (GeV)"
@@ -392,7 +421,7 @@ def RunNuWroGAN(
         for var_name, value_dic in vars_dic.items():
             make_hist(
                 value_dic["gan"],
-                fig_name="NuMu_Gen_" + var_name,
+                fig_name=output + "_" + var_name,
                 bins=value_dic["bins"],
                 arange=value_dic["range"],
                 xlabel=value_dic["xlabel"],
@@ -400,3 +429,5 @@ def RunNuWroGAN(
                 figure_format=["pdf", 'png'],
                 xsec=xsec
             )
+            
+    return evts

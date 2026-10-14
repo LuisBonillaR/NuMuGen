@@ -21,6 +21,8 @@ parser.add_argument(
     '--flux', type=float, nargs="*",
     help='Energy of neutrino beam in MeV. Defaults to MicroBooNE flux.'
 )
+parser.add_argument('--output', type=str,
+    help="Common base name for outputs. Defaults to 'output'.")
 parser.add_argument(
     "--no-plots", action="store_true", default=None,
     help="Use it to prevent saving histograms of generated variables."
@@ -49,6 +51,7 @@ if __name__ == "__main__":
     generator = args.generator
     n_events = args.n_events
     flux = args.flux
+    output = args.output
     no_plots = args.no_plots
     norm = args.norm
     batch_size = args.batch_size
@@ -59,6 +62,7 @@ if __name__ == "__main__":
         n_events,
         flux,
         batch_size,
+        output,
         no_plots,
         norm
     )

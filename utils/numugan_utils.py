@@ -21,15 +21,18 @@ power = 2.0
 OUTPUT_DIR = "outputs/"
 OUTPUT_FIG = "figures/"
 OUTPUT_FILE = "files/"
+
+url = "https://arxiv.org/abs/2610.xxxxx"
+link = f"\033]8;;{url}\033\\arXiv:2610.xxxxx\033]8;;\033\\"
 numugen_string = (
-"""_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
-                    _____   ______   __   _                                
-  _   _            / ____| |  ____| |  \ | |  NuMu-GEN Neutrino Generator  
- / \ ( |     ___  | |  __  | |___   | | \| |  J. L. Bonilla et al.         
-  \ \//     |___| | |__\ | |  ___|  | |\ \ |                               
-   \_/  |_|        \_____/ |______| |_| \__|  26.10                        
-        |                                                                  
-_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+f"""----------------------------------------------------------------------------
+                     _____   ______   __   _                                
+   _   _            / ____| |  ____| |  \ | |  NuMu-GEN Neutrino Generator  
+  / \ ( |     ___  | |  __  | |___   | | \| |  J. L. Bonilla et al.         
+   \ \//     |___| | |__\ | |  ___|  | |\ \ |  {link}             
+    \_/  |_|        \_____/ |______| |_| \__|  Release 2026.10              
+         |                                                                  
+----------------------------------------------------------------------------
 """
 )
 
@@ -50,7 +53,7 @@ def load_config(parser):
     
     conf = {}
     
-    conf['generator'] = cfg.get('models', 'generator')
+    conf['mu_gen'] = cfg.get('models', 'mu_gen')
     conf['xsec_model'] = cfg.get('models', 'xsec_model')
     
     conf['flux'] = parse_value_or_list(cfg.get('events', 'flux'), float)
@@ -70,7 +73,7 @@ def load_config(parser):
 
 
 
-def predict(model, latent_points, Enu, n_events=None, chunk_size=1000):
+def predict(model, Enu, n_events=None, chunk_size=1000):
     from tensorflow.keras.utils import Progbar
     # produce as many events as number of latent vectors
     if n_events is None:
@@ -81,15 +84,17 @@ def predict(model, latent_points, Enu, n_events=None, chunk_size=1000):
     progress = Progbar(steps)
     
     for index in range(0, n_events, chunk_size):
-        progress.update(index/chunk_size+1)
+        enu_batch = Enu[index:index+chunk_size]
+        latent_points = np.random.normal(size=(enu_batch.size, 50))
         prediction = model(
-            [latent_points[index:index+chunk_size],
-            Enu[index:index+chunk_size]], training=True
+            [latent_points, enu_batch], training=True
         ).numpy()
         if index == 0:
             predictions = prediction
         else:
             predictions = np.append(predictions, prediction, axis=0)
+        
+        progress.update(index/chunk_size+1)
     
     return predictions
 
@@ -253,7 +258,7 @@ def make_hist(
     ax.set_ylim([ymin, ymax])
     
     path = OUTPUT_DIR + OUTPUT_FIG
-    print("Saving {} histogram in {}".format(fig_name, path))
+    print("Saving {} histogram to {}".format(fig_name, path))
     if type(figure_format) is list:
         for form in figure_format:
             plt.savefig(path + fig_name + "." + form)
@@ -317,9 +322,8 @@ def RunNuWroGAN(
     print("Obtaining muon kinematics...")
     Enu_in = np.reshape(Enu_gen, [Enu_gen.shape[0], 1])
     Enu_in = normalize_Enu(Enu_in, 110.0, 10000.0)
-    latent_points = np.random.normal(size=(Enu_gen.shape[0], 50))
     
-    gen_events = predict(generator, latent_points, Enu_in, n_events, batch_size)
+    gen_events = predict(generator, Enu_in, n_events, batch_size)
     
     vEmu_gen = gen_events[:,0]
     vthetamu_gen = gen_events[:,1]
@@ -331,9 +335,11 @@ def RunNuWroGAN(
     Q2_gen = calc_Q2(Enu_gen, Emu_gen, thetamu_gen, lepmass_gen)
     Invmass_gen = calc_Invmass(Ehad_gen, Q2_gen)
     
-    print('---------------------------------------------------------------------------')
-    print(" Flux integrated cross section: {} cm^2".format(nn_xsec*1e-38))
-    print('---------------------------------------------------------------------------')
+    out_msg = "Flux integrated cross section: {} cm²".format(nn_xsec*1e-38)
+    
+    print('----------------------------------------------------------------------------')
+    print("  {}".format(out_msg))
+    print('----------------------------------------------------------------------------')
     
     evts = {
         "Enu": Enu_gen,
@@ -346,14 +352,14 @@ def RunNuWroGAN(
     }
     
     path = OUTPUT_DIR + OUTPUT_FILE
-    print("Saving {} simulation files in {}".format(output, path))
+    print("Saving {} simulation files to {}".format(output, path))
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     os.makedirs(path, exist_ok=True)
     output_name = path + output
     with uproot.recreate(output_name + ".root") as f:
         f.mktree("events", evts)
     with open(output_name + ".txt", 'w') as f:
-        f.write("Flux integrated cross section: {} cm^2".format(nn_xsec*1e-38))
+        f.write(out_msg)
     
     if not no_plots:
         xsec = nn_xsec if norm else None
@@ -392,8 +398,8 @@ def RunNuWroGAN(
         thetamu_hist["gan"] = thetamu_gen
         thetamu_hist["bins"] = bins
         thetamu_hist["range"] = [0,PI]
-        thetamu_hist["xlabel"] = r"${\theta_\mu}$ (rad)"
-        thetamu_hist["ylabel"] = r"$d\sigma/d\theta_\mu(\times10^{-38})$" if xsec is not None else prob_label
+        thetamu_hist["xlabel"] = r"${\theta}$ (rad)"
+        thetamu_hist["ylabel"] = r"$d\sigma/d\theta(\times10^{-38})$" if xsec is not None else prob_label
         
         # pmuz
         pmuz_hist["gan"] = pmuz_gen * MEV_TO_GEV
@@ -413,7 +419,7 @@ def RunNuWroGAN(
         
         vars_dic["Emu"] = Emu_hist
         vars_dic["Ehad"] = Ehad_hist
-        vars_dic["thetamu"] = thetamu_hist
+        vars_dic["theta"] = thetamu_hist
         vars_dic["pmuz"] = pmuz_hist
         vars_dic["Q2"] = Q2_hist
         vars_dic["Invmass"] = Invmass_hist

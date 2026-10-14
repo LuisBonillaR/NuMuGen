@@ -7,8 +7,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--conf', default='config/default.ini',
     help="Path to configuration file. Defaults to 'config/default.ini'." + 
     " Options in configuration file are overriden by the following flags.")
-parser.add_argument('--generator', type=str, help='GAN generator file.')
-parser.add_argument('--xsec-model', type=str, help='sigma-DNN file.')
+parser.add_argument('--mu-gen', type=str, help='GAN mu generator model.')
+parser.add_argument('--xsec-model', type=str, help='sigma-DNN model.')
 parser.add_argument(
     '--n-events', type=int,
     help="Number of events per batch to be produced. Defaults to 100000"
@@ -48,7 +48,7 @@ if __name__ == "__main__":
     os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
     
     xsec_model = args.xsec_model
-    generator = args.generator
+    generator = args.mu_gen
     n_events = args.n_events
     flux = args.flux
     output = args.output

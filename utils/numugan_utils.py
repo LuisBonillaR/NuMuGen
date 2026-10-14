@@ -346,7 +346,7 @@ def RunNuWroGAN(
     }
     
     path = OUTPUT_DIR + OUTPUT_FILE
-    print("Saving {} files in {}".format(output, path))
+    print("Saving {} simulation files in {}".format(output, path))
     os.makedirs(OUTPUT_DIR, exist_ok=True)
     os.makedirs(path, exist_ok=True)
     output_name = path + output

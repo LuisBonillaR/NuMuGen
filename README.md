@@ -67,8 +67,8 @@ Create or edit `config/default.ini` to set model paths, event counts, GPU usage,
 
 ```ini
 [models]
-generator  = ; Path to generator .keras/.h5 model
-xsec_model = ; Path to cross section .keras/.h5 model
+mu_gen = ; Path to muon generator .keras/.h5 model
+xsec_model = ; Path to neutrino cross section .keras/.h5 model
 
 [events]
 flux     = ; Flux. Either monoenergetic beam or flux min_enu max_enu bins_height

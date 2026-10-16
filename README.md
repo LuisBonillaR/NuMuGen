@@ -86,6 +86,26 @@ gpu        = ; bool. Use GPU (when available)
 
 CLI flags always override config file values.
 
+# Citation
+
+If you use this codebase or research in your work, please cite our paper:
+
+**Machine-learning-based neutrino-event generation constrained by experimental measurements**  
+Jose Luis Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, and Jan T. Sobczyk (2026).  
+*arXiv preprint* [arXiv:2610.20870 [hep-ph]](https://arxiv.org/abs/2610.20870).
+
+```bibtex
+@misc{bonilla2026machinelearningbasedneutrinoeventgenerationconstrained,
+      title={Machine-learning-based neutrino-event generation constrained by experimental measurements}, 
+      author={Jose Luis Bonilla and Krzysztof M. Graczyk and Rwik Dharmapal Banerjee and Beata E. Kowal and Hemant Prasad and Jan T. Sobczyk},
+      year={2026},
+      eprint={2610.20870},
+      archivePrefix={arXiv},
+      primaryClass={hep-ph},
+      url={[https://arxiv.org/abs/2610.20870](https://arxiv.org/abs/2610.20870)}, 
+}
+
+
 # Acknowledgments
 
 This research is partly (K.M.G., B.E.K, J.T.S.) or fully (J.L.B, H.P., R.D.B.) supported by the National Science Centre under grant UMO-2021/41/B/ST2/02778. J.L.B. and J.T.S. are also supported by the Polish Ministry of Science Grant No. 2022/WK/15.

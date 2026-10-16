@@ -104,7 +104,7 @@ Jose Luis Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal
       primaryClass={hep-ph},
       url={[https://arxiv.org/abs/2610.20870](https://arxiv.org/abs/2610.20870)}, 
 }
-
+```
 
 # Acknowledgments
 

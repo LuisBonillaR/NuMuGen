@@ -11,9 +11,9 @@ import configparser
 
 plt.rcParams.update({"font.size": 16})
 
-MMU = 105.658 # (MeV) muon mass
-MN = 939.56542052
-MP = 938.27208943
+MMU = 105.658 # muon mass (MeV)
+MN = 939.56542052 # neutron mass (MeV)
+MP = 938.27208943 # proton mass (MeV)
 MNUC = (MN + MP)/2
 MEV_TO_GEV = 1e-3
 power = 2.0
@@ -22,8 +22,8 @@ OUTPUT_DIR = "outputs/"
 OUTPUT_FIG = "figures/"
 OUTPUT_FILE = "files/"
 
-url = "https://arxiv.org/abs/2610.xxxxx"
-link = f"\033]8;;{url}\033\\arXiv:2610.xxxxx\033]8;;\033\\"
+url = "https://arxiv.org/abs/2610.20870"
+link = f"\033]8;;{url}\033\\arXiv:2610.20870\033]8;;\033\\"
 numugen_string = (
 f"""----------------------------------------------------------------------------
                      _____   ______   __   _                                
@@ -276,7 +276,6 @@ def RunNuWroGAN(
     ):
     print(numugen_string)
     import tensorflow as tf
-    bins_2d = [50, 50]
     bins = 50
     
     print("Generating {} events with '{}' and '{}'.".format(

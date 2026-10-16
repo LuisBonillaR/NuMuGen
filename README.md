@@ -28,7 +28,7 @@ The tuned model distributed here is the resulting surrogate.
 
 Based on:
 
-- __Machine-learning-based neutrino-event generation constrained by experimental measurements__, by Jose L. Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, and Jan T. Sobczyk, [arXiv:2610.xxxxx](xx).
+- __Machine-learning-based neutrino-event generation constrained by experimental measurements__, by Jose L. Bonilla, Krzysztof M. Graczyk, Rwik Dharmapal Banerjee, Beata E. Kowal, Hemant Prasad, and Jan T. Sobczyk, [arXiv:2610.20870](https://arxiv.org/abs/2610.20870).
 
 <img width="640" height="480" alt="NuMu_Gen_Invmass" src="https://github.com/user-attachments/assets/3a8d8dae-74b7-4859-a81f-cb2506f83df5" />
 

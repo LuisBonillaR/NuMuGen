@@ -1,7 +1,7 @@
 import os
 import argparse
 
-from utils.numugan_utils import load_config, RunNuWroGAN
+from utils.numugen_utils import load_config, RunNuWroGAN
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--conf', default='config/default.ini',
